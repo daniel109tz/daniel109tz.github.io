@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kibana on Daniel Blog</title>
+    <link>https://daniel109tz.github.io/tags/kibana/</link>
+    <description>Recent content in Kibana on Daniel Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-tw</language>
+    <lastBuildDate>Thu, 01 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://daniel109tz.github.io/tags/kibana/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[ELK]讓Kibana可以看到Nginx Log系列(1)：設定Nginx Log</title>
+      <link>https://daniel109tz.github.io/2022/12/01/elk-1/</link>
+      <pubDate>Thu, 01 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://daniel109tz.github.io/2022/12/01/elk-1/</guid>
+      <description>此篇我們會將nginx log修改成為logstash可以正確辨識的格式。 備註： 系統環境為CentOS 7， 關於nginx log format 的詳細解釋， 可以參</description>
+    </item>
+    
+    <item>
+      <title>[ELK]讓Kibana可以看到Nginx Log系列(0)：ELK架構(Elastic)系統串接介紹</title>
+      <link>https://daniel109tz.github.io/2022/11/30/elk-0/</link>
+      <pubDate>Wed, 30 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://daniel109tz.github.io/2022/11/30/elk-0/</guid>
+      <description>這系列要介紹如何使用ELK架構(Elastic)及Filebeat來監控nginx的access.log。我會針對每個步驟寫出一篇文章來介紹</description>
+    </item>
+    
+  </channel>
+</rss>
