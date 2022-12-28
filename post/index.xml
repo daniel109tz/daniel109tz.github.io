@@ -251,14 +251,5 @@ export HTTPS_PROXY=&amp;#34;http://127.0.0.1:3128/&amp;#34;
 &lt;p&gt;服务网格将服务间通讯以及与此相关的管理控制功能从业务程序中下移到一个基础设施层，从而彻底隔离了业务逻辑和服务通讯两个关注点。采用服务网格后，应用开发者只需要关注并实现应用业务逻辑。服务之间的通信，包括服务发现，通讯的可靠性，通讯的安全性，服务路由等由服务网格层进行处理，并对应用程序透明。&lt;/p&gt;</description>
     </item>
     
-    <item>
-      <title>Welcome to Zhaohuabing Blog</title>
-      <link>https://daniel109tz.github.io/2017/11/03/hello-world/</link>
-      <pubDate>Sat, 04 Nov 2017 00:00:00 +0000</pubDate>
-      
-      <guid>https://daniel109tz.github.io/2017/11/03/hello-world/</guid>
-      <description>“Yeah It&amp;rsquo;s on. ” Hello World!</description>
-    </item>
-    
   </channel>
 </rss>
