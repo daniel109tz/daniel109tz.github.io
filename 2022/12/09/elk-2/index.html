@@ -15,9 +15,9 @@
     
 
     
-    <meta name="title" content="[ELK]讓Kibana可以看到Nginx Log系列(1)：設定Nginx Log" />
-    <meta property="og:title" content="[ELK]讓Kibana可以看到Nginx Log系列(1)：設定Nginx Log" />
-    <meta property="twitter:title" content="[ELK]讓Kibana可以看到Nginx Log系列(1)：設定Nginx Log" />
+    <meta name="title" content="[ELK]讓Kibana可以看到Nginx Log系列(2)：設定Filebeat監聽" />
+    <meta property="og:title" content="[ELK]讓Kibana可以看到Nginx Log系列(2)：設定Filebeat監聽" />
+    <meta property="twitter:title" content="[ELK]讓Kibana可以看到Nginx Log系列(2)：設定Filebeat監聽" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="電商 社群 系統架構 全端工程師 文章創作者">
     <link rel="shortcut icon" href="/img/favicon/favicon.ico">
 
-    <title>[ELK]讓Kibana可以看到Nginx Log系列(1)：設定Nginx Log |  Daniel Blog</title>
+    <title>[ELK]讓Kibana可以看到Nginx Log系列(2)：設定Filebeat監聽 |  Daniel Blog</title>
 
-    <link rel="canonical" href="/2022/12/01/elk-1/">
+    <link rel="canonical" href="/2022/12/09/elk-2/">
 
     
     
@@ -203,7 +203,7 @@
                         </a>
                         
                     </div>
-                    <h1>[ELK]讓Kibana可以看到Nginx Log系列(1)：設定Nginx Log</h1>
+                    <h1>[ELK]讓Kibana可以看到Nginx Log系列(2)：設定Filebeat監聽</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         
@@ -212,7 +212,7 @@
                                     &#34;Daniel&#34;
                              
                             on 
-                            Thursday, December 1, 2022
+                            Friday, December 9, 2022
                             
                             
                             
@@ -238,45 +238,45 @@
                 post-container">
 
                 
-                <p>此篇我們會將nginx log修改成為logstash可以正確辨識的格式。</p>
-<p>
-  <img src="/img/elk/1/1.jpg" alt="Nginx">
-
-</p>
-<blockquote>
-<p>備註：</p>
-<ul>
-<li>系統環境為CentOS 7，</li>
-<li>關於nginx log format 的詳細解釋， 可以參考官方網站，網址如下：</li>
-</ul>
-</blockquote>
-<p><em><a href="http://nginx.org/en/docs/varindex.html"><em>Alphabetical index of variables?</em>
-</a></em></p>
+                <p>filebeat的作用就像是一隻看門狗(watch dog)，當看門狗監測到任何風吹草動(log產生變化)時，就立即事件告訴主人(logstash)。</p>
+<p>上一篇已經將log正常產生了，再來要有一個監聽者，來幫我們注意log有沒有產生變化。</p>
+<p>首先要準備filebeatF的設定檔(filebeat.yml)，並且將設定檔放到指定的位置，我自已是放到 /home/filebeat/filebeat.yml。</p>
+<p>filebeat.yml的內容如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">filebeat.inputs</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">type</span>: filestream
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">id</span>: my-filestream-id
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">enabled</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">paths</span>:
+</span></span><span style="display:flex;"><span>    - /logs/access/*  <span style="color:#6272a4">#要改成監聽的log位置</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">filebeat.config.modules</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">path</span>: ${path.config}/modules.d/*.yml
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">reload.enabled</span>: <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">output.logstash</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">hosts</span>: [<span style="color:#f1fa8c">&#34;10.10.10.10:5000&#34;</span>]  <span style="color:#6272a4">#要改成logstash的所在ip及port號</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">processors</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">add_host_metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">when.not.contains.tags</span>: forwarded
+</span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">add_cloud_metadata</span>: ~
+</span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">add_docker_metadata</span>: ~
+</span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">add_kubernetes_metadata</span>: ~
+</span></span></code></pre></div><p>filebeat.yml設定要修改兩個地方：</p>
 <ol>
-<li>首先我們要開啟nginx的設定檔，對針access.log format進行修改</li>
+<li>paths:  #改成監聽的log位置</li>
+<li>hosts:  #要改成logstash的所在ip及port號</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ vim /etc/nginx/nginx.conf
-</span></span></code></pre></div><ol start="2">
-<li>我們可以在nginx.conf裡的http括號找到log_format，並且將其改成下列格式 ：</li>
-</ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    log_format  main  &#39;$remote_addr - $remote_user [$time_local] $http_host $request_method $uri $query_string &#39; &#39;$status $body_bytes_sent $http_referer $upstream_status $upstream_addr $request_time $upstream_response_time &#39; &#39;$http_user_agent $http_x_forwarded_for&#39; ;
-</span></span></code></pre></div><ol start="3">
-<li>從設定檔裡面可以看到access_log，所產生的位置已經被我更換了，如果將位置更換到不同的目錄下，必要還要去修改一些設定檔，系統才會將log照日期切割並且進行壓縮。如何修正log設定檔，可以參考下列文章：</li>
-</ol>
-<p><em><a href="https://medium.com/@q29823/nginx-%E6%9B%B4%E6%94%B9access-log%E4%BD%8D%E7%BD%AE-%E5%B0%B1%E4%B8%8D%E8%87%AA%E5%8B%95%E5%88%87%E6%97%A5%E6%9C%9F-%E4%B9%9F%E4%B8%8D%E5%A3%93%E7%B8%AE%E4%BA%86-b549803d99ba"><em>NGINX #?更改access.log位置，就不自動切日期，也不壓縮了?</em>
-</a></em></p>
-<p>修改完成之後，我們要讓其設定生效，通常我會使用以下指令：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ systemctl reload nginx
-</span></span></code></pre></div><ol start="4">
-<li>讓系統重新讀寫nginx.conf 之後，再觀察一下自已log所顯示的格式及位置有沒有異樣，可以使用以下指令</li>
-</ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ tail -f /var/log/nginx/access/access.log
-</span></span></code></pre></div><ol start="5">
-<li>log的位置就是參照nginx.conf裡的access_log 位置，如果有看到log不停的往上出現，就代表正常沒問題。</li>
-</ol>
-<blockquote>
-<p>log設定完成了，下一篇文章要介紹在系統內安裝filebeat來監聽log是否有產生變化，產生變化的時候，要將log即時的傳送給logstatsh 去做格式的轉換，並且在kibana 裡可被使用</p>
-</blockquote>
+<p>設定檔設定完成之後，為了方便，我是使用docker來啟動filebeat的服務，指令如下：</p>
+<p>指令要注意的地方就是log位置及filebeat.yml位置是否有寫正確，沒問題的話，就可以按enter了</p>
+<pre tabindex="0"><code>docker run -d --name filebeat_7 \
+  -v /home/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
+  -v /var/log/nginx/access:/logs/access \
+  docker.elastic.co/beats/filebeat:7.17.6
+</code></pre><p>等docker起來之後，我們用指令docker ps，就可以看到 filebeat的container正確被啟動</p>
+<pre tabindex="0"><code>CONTAINER ID   IMAGE                                       COMMAND                  CREATED        STATUS        PORTS                                       NAMES
+4cde932784a5   docker.elastic.co/beats/filebeat:7.17.6     &#34;/usr/bin/tini -- /u…&#34;   2 weeks ago    Up 2 weeks                                                filebeat
+</code></pre><p>到目前為止，log設定好了、filebeat也設定好了，filebeat 監聽到log變化時，就要將log主動傳送給logstatsh，下一篇文章要介紹logstatsh的安裝及設定。</p>
 <p>每個步驟的文章會陸續上架，如果還沒看到連結，就代表我還在趕文章中。如果喜歡我寫的內容，希望能夠多多關注我，讓創作者們能夠有繼續創作內容的動力，感謝你們</p>
 
 
@@ -287,13 +287,13 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2022/11/30/elk-0/" data-toggle="tooltip" data-placement="top" title="[ELK]讓Kibana可以看到Nginx Log系列(0)：ELK架構(Elastic)系統串接介紹">&larr;
+                        <a href="/2022/12/01/elk-1/" data-toggle="tooltip" data-placement="top" title="[ELK]讓Kibana可以看到Nginx Log系列(1)：設定Nginx Log">&larr;
                             Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2022/12/09/elk-2/" data-toggle="tooltip" data-placement="top" title="[ELK]讓Kibana可以看到Nginx Log系列(2)：設定Filebeat監聽">Next
+                        <a href="/2022/12/15/elk-3/" data-toggle="tooltip" data-placement="top" title="[ELK]讓Kibana可以看到Nginx Log系列(3)：設定Logstash">Next
                             Post &rarr;</a>
                     </li>
                     

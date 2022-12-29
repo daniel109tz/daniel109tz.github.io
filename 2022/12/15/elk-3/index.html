@@ -15,9 +15,9 @@
     
 
     
-    <meta name="title" content="[ELK]讓Kibana可以看到Nginx Log系列(1)：設定Nginx Log" />
-    <meta property="og:title" content="[ELK]讓Kibana可以看到Nginx Log系列(1)：設定Nginx Log" />
-    <meta property="twitter:title" content="[ELK]讓Kibana可以看到Nginx Log系列(1)：設定Nginx Log" />
+    <meta name="title" content="[ELK]讓Kibana可以看到Nginx Log系列(3)：設定Logstash" />
+    <meta property="og:title" content="[ELK]讓Kibana可以看到Nginx Log系列(3)：設定Logstash" />
+    <meta property="twitter:title" content="[ELK]讓Kibana可以看到Nginx Log系列(3)：設定Logstash" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="電商 社群 系統架構 全端工程師 文章創作者">
     <link rel="shortcut icon" href="/img/favicon/favicon.ico">
 
-    <title>[ELK]讓Kibana可以看到Nginx Log系列(1)：設定Nginx Log |  Daniel Blog</title>
+    <title>[ELK]讓Kibana可以看到Nginx Log系列(3)：設定Logstash |  Daniel Blog</title>
 
-    <link rel="canonical" href="/2022/12/01/elk-1/">
+    <link rel="canonical" href="/2022/12/15/elk-3/">
 
     
     
@@ -203,7 +203,7 @@
                         </a>
                         
                     </div>
-                    <h1>[ELK]讓Kibana可以看到Nginx Log系列(1)：設定Nginx Log</h1>
+                    <h1>[ELK]讓Kibana可以看到Nginx Log系列(3)：設定Logstash</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         
@@ -212,7 +212,7 @@
                                     &#34;Daniel&#34;
                              
                             on 
-                            Thursday, December 1, 2022
+                            Thursday, December 15, 2022
                             
                             
                             
@@ -238,45 +238,68 @@
                 post-container">
 
                 
-                <p>此篇我們會將nginx log修改成為logstash可以正確辨識的格式。</p>
+                <p>Logstash 能夠動態地採集、轉換和傳輸數據，不受格式或複雜度的影響。利用 Grok 從非結構化數據中派生出結構，從 IP 地址解碼出地理坐標，匿名化或排除敏感字段，並簡化整體處理過程(取自https://www.elastic.co/cn/logstash/，elastic官網)</p>
 <p>
-  <img src="/img/elk/1/1.jpg" alt="Nginx">
+  <img src="/img/elk/3/1.png" alt="Logstash">
 
 </p>
-<blockquote>
-<p>備註：</p>
-<ul>
-<li>系統環境為CentOS 7，</li>
-<li>關於nginx log format 的詳細解釋， 可以參考官方網站，網址如下：</li>
-</ul>
+<p>Logstash 功能有很多，但是我們只有單純要使用接訊息、並將訊息轉傳給kibana。
+Logstash程式的目錄如下圖
+
+  <img src="/img/elk/3/2.png" alt="目錄">
+
+</p>
+<p>1、先介紹 /logstash/config/logstash.yml，內容如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## Default Logstash configuration from logstash-docker.</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## from https://github.com/elastic/logstash-docker/blob/master/build/logstash/config/logstash-oss.yml</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">http.host</span>: <span style="color:#f1fa8c">&#34;0.0.0.0&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">path.config</span>: /usr/share/logstash/pipeline
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">pipeline.ecs_compatibility</span>: disabled
+</span></span></code></pre></div><blockquote>
+<p>/logstash/config/logstash.yml 的內容，完全不用變動，只要照抄就好</p>
 </blockquote>
-<p><em><a href="http://nginx.org/en/docs/varindex.html"><em>Alphabetical index of variables?</em>
-</a></em></p>
-<ol>
-<li>首先我們要開啟nginx的設定檔，對針access.log format進行修改</li>
-</ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ vim /etc/nginx/nginx.conf
-</span></span></code></pre></div><ol start="2">
-<li>我們可以在nginx.conf裡的http括號找到log_format，並且將其改成下列格式 ：</li>
-</ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    log_format  main  &#39;$remote_addr - $remote_user [$time_local] $http_host $request_method $uri $query_string &#39; &#39;$status $body_bytes_sent $http_referer $upstream_status $upstream_addr $request_time $upstream_response_time &#39; &#39;$http_user_agent $http_x_forwarded_for&#39; ;
-</span></span></code></pre></div><ol start="3">
-<li>從設定檔裡面可以看到access_log，所產生的位置已經被我更換了，如果將位置更換到不同的目錄下，必要還要去修改一些設定檔，系統才會將log照日期切割並且進行壓縮。如何修正log設定檔，可以參考下列文章：</li>
-</ol>
-<p><em><a href="https://medium.com/@q29823/nginx-%E6%9B%B4%E6%94%B9access-log%E4%BD%8D%E7%BD%AE-%E5%B0%B1%E4%B8%8D%E8%87%AA%E5%8B%95%E5%88%87%E6%97%A5%E6%9C%9F-%E4%B9%9F%E4%B8%8D%E5%A3%93%E7%B8%AE%E4%BA%86-b549803d99ba"><em>NGINX #?更改access.log位置，就不自動切日期，也不壓縮了?</em>
-</a></em></p>
-<p>修改完成之後，我們要讓其設定生效，通常我會使用以下指令：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ systemctl reload nginx
-</span></span></code></pre></div><ol start="4">
-<li>讓系統重新讀寫nginx.conf 之後，再觀察一下自已log所顯示的格式及位置有沒有異樣，可以使用以下指令</li>
-</ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ tail -f /var/log/nginx/access/access.log
-</span></span></code></pre></div><ol start="5">
-<li>log的位置就是參照nginx.conf裡的access_log 位置，如果有看到log不停的往上出現，就代表正常沒問題。</li>
-</ol>
-<blockquote>
-<p>log設定完成了，下一篇文章要介紹在系統內安裝filebeat來監聽log是否有產生變化，產生變化的時候，要將log即時的傳送給logstatsh 去做格式的轉換，並且在kibana 裡可被使用</p>
+<p>2、再來看比較重要的/logstash/pipeline/logstash.conf，內容如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>input {
+</span></span><span style="display:flex;"><span>	beats {
+</span></span><span style="display:flex;"><span>		port =&gt; 5000
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## Add your filters / logstash plugins configuration here</span>
+</span></span><span style="display:flex;"><span>filter {
+</span></span><span style="display:flex;"><span>        grok {
+</span></span><span style="display:flex;"><span>					 break_on_match =&gt; true
+</span></span><span style="display:flex;"><span>			 		 match =&gt; {
+</span></span><span style="display:flex;"><span>			            <span style="color:#f1fa8c">&#34;message&#34;</span> =&gt; &#34;%{IPV4:remote_address} - (%{USERNAME:user}|-) \[%{HTTPDATE:log_timestamp}\] (%{HOSTNAME:hostname}|-) (%{WORD:request_method}|-) (%{URIPATH:uri}|-|) (%{DATA:path}|-) %{INT:status_code:int} (?:%{BASE10NUM:body_bytes_sent}|-) (?:%{GREEDYDATA:http_referrer}|-) (?:%{NOTSPACE:http_x_forwarded_for}|-)&#34; }
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				date {
+</span></span><span style="display:flex;"><span>						locale =&gt; &#34;UTF-8&#34;
+</span></span><span style="display:flex;"><span>						match =&gt; [ &#34;log_timestamp&#34;, &#34;dd/MMM/yyyy:HH:mm:ss Z&#34; ]
+</span></span><span style="display:flex;"><span>						remove_field =&gt; [&#34;timestamp&#34;]
+</span></span><span style="display:flex;"><span>						target =&gt; &#34;log_timestamp&#34;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				mutate {
+</span></span><span style="display:flex;"><span>		        remove_field =&gt; [ &#34;message&#34; ]
+</span></span><span style="display:flex;"><span>		    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>output {
+</span></span><span style="display:flex;"><span>	elasticsearch {
+</span></span><span style="display:flex;"><span>		hosts =&gt; &#34;elasticsearch:9200&#34;
+</span></span><span style="display:flex;"><span>		index =&gt; &#34;nginx-log-%{+yyyy.MM.dd}&#34;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>/logstash/pipeline/logstash.conf，對於filebeat傳來的資料，是使用grok將非結構化日誌數據解析為結構化和可查詢內容，關於在撰寫grok時，可以用grok debugger 來做設定之前的語言轉換</p>
 </blockquote>
+<p><em><a href="https://grokdebugger.com/"><em>Grok Debugger | Autocomplete and Live Match Highighting</em></a></em></p>
+<p>關於grok pattern的寫法，也可以參考下列網址：</p>
+<p><em><a href="https://doc.yonyoucloud.com/doc/logstash-best-practice-cn/filter/grok.html"><em>Logstash最佳實踐</em></a></em></p>
+<p>這裡特別注意到，在kibana裡面，一定會用到日期來做dashboard的設定，所以日期的格式，一定要是”date”類型，不能是字串，或其它</p>
+<p>而設定output的host就是對到elasticsearch的port號，通常都是用9200。會特別修改的通常都是在index的名稱，到時候在kibana設定要顯示的內容，就是會用index做依據。</p>
+<p>到這裡，Logstash已經設定完了，後續還會介紹 elasticsearch、kibana的程式設定。</p>
 <p>每個步驟的文章會陸續上架，如果還沒看到連結，就代表我還在趕文章中。如果喜歡我寫的內容，希望能夠多多關注我，讓創作者們能夠有繼續創作內容的動力，感謝你們</p>
 
 
@@ -287,15 +310,10 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2022/11/30/elk-0/" data-toggle="tooltip" data-placement="top" title="[ELK]讓Kibana可以看到Nginx Log系列(0)：ELK架構(Elastic)系統串接介紹">&larr;
+                        <a href="/2022/12/09/elk-2/" data-toggle="tooltip" data-placement="top" title="[ELK]讓Kibana可以看到Nginx Log系列(2)：設定Filebeat監聽">&larr;
                             Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2022/12/09/elk-2/" data-toggle="tooltip" data-placement="top" title="[ELK]讓Kibana可以看到Nginx Log系列(2)：設定Filebeat監聽">Next
-                            Post &rarr;</a>
-                    </li>
                     
                 </ul>
                 

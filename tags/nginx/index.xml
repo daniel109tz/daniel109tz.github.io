@@ -6,7 +6,25 @@
     <description>Recent content in Nginx on Daniel Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Thu, 01 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://daniel109tz.github.io/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 15 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://daniel109tz.github.io/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[ELK]讓Kibana可以看到Nginx Log系列(3)：設定Logstash</title>
+      <link>https://daniel109tz.github.io/2022/12/15/elk-3/</link>
+      <pubDate>Thu, 15 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://daniel109tz.github.io/2022/12/15/elk-3/</guid>
+      <description>Logstash 能夠動態地採集、轉換和傳輸數據，不受格式或複雜度的影響。利用 Grok 從非結構化數據中派生出結構，從 IP 地址解碼出地理坐標，匿名化或排除敏感字段，並</description>
+    </item>
+    
+    <item>
+      <title>[ELK]讓Kibana可以看到Nginx Log系列(2)：設定Filebeat監聽</title>
+      <link>https://daniel109tz.github.io/2022/12/09/elk-2/</link>
+      <pubDate>Fri, 09 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://daniel109tz.github.io/2022/12/09/elk-2/</guid>
+      <description>filebeat的作用就像是一隻看門狗(watch dog)，當看門狗監測到任何風吹草動(log產生變化)時，就立即事件告訴主人(logsta</description>
+    </item>
+    
     <item>
       <title>[ELK]讓Kibana可以看到Nginx Log系列(1)：設定Nginx Log</title>
       <link>https://daniel109tz.github.io/2022/12/01/elk-1/</link>
