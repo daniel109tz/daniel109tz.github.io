@@ -105,18 +105,6 @@
                             <a href="/categories/elk">elk</a>
                         </li>
                         
-                        <li>
-                            <a href="/categories/life">life</a>
-                        </li>
-                        
-                        <li>
-                            <a href="/categories/tech">tech</a>
-                        </li>
-                        
-                        <li>
-                            <a href="/categories/tips">tips</a>
-                        </li>
-                        
                     
                     
 		    
@@ -238,10 +226,11 @@
                 post-container">
 
                 
-                <p>filebeat的作用就像是一隻看門狗(watch dog)，當看門狗監測到任何風吹草動(log產生變化)時，就立即事件告訴主人(logstash)。</p>
-<p>上一篇已經將log正常產生了，再來要有一個監聽者，來幫我們注意log有沒有產生變化。</p>
-<p>首先要準備filebeatF的設定檔(filebeat.yml)，並且將設定檔放到指定的位置，我自已是放到 /home/filebeat/filebeat.yml。</p>
-<p>filebeat.yml的內容如下：</p>
+                <h3 id="filebeat的作用就像是一隻看門狗watch-dog當看門狗監測到任何風吹草動log產生變化時就立即事件告訴主人logstash">filebeat的作用就像是一隻看門狗(watch dog)，當看門狗監測到任何風吹草動(log產生變化)時，就立即事件告訴主人(logstash)。</h3>
+<hr>
+<h4 id="上一篇已經將log正常產生了再來要有一個監聽者來幫我們注意log有沒有產生變化">上一篇已經將log正常產生了，再來要有一個監聽者，來幫我們注意log有沒有產生變化。</h4>
+<h4 id="首先要準備filebeatf的設定檔filebeatyml並且將設定檔放到指定的位置我自已是放到-homefilebeatfilebeatyml">首先要準備filebeatF的設定檔(filebeat.yml)，並且將設定檔放到指定的位置，我自已是放到 /home/filebeat/filebeat.yml。</h4>
+<h4 id="filebeatyml的內容如下">filebeat.yml的內容如下：</h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">filebeat.inputs</span>:
 </span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">type</span>: filestream
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">id</span>: my-filestream-id
@@ -262,21 +251,23 @@
 </span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">add_cloud_metadata</span>: ~
 </span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">add_docker_metadata</span>: ~
 </span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">add_kubernetes_metadata</span>: ~
-</span></span></code></pre></div><p>filebeat.yml設定要修改兩個地方：</p>
+</span></span></code></pre></div><h4 id="filebeatyml設定要修改兩個地方">filebeat.yml設定要修改兩個地方：</h4>
 <ol>
 <li>paths:  #改成監聽的log位置</li>
 <li>hosts:  #要改成logstash的所在ip及port號</li>
 </ol>
-<p>設定檔設定完成之後，為了方便，我是使用docker來啟動filebeat的服務，指令如下：</p>
-<p>指令要注意的地方就是log位置及filebeat.yml位置是否有寫正確，沒問題的話，就可以按enter了</p>
+<h4 id="設定檔設定完成之後為了方便我是使用docker來啟動filebeat的服務指令如下">設定檔設定完成之後，為了方便，我是使用docker來啟動filebeat的服務，指令如下：</h4>
+<h4 id="指令要注意的地方就是log位置及filebeatyml位置是否有寫正確沒問題的話就可以按enter了">指令要注意的地方就是log位置及filebeat.yml位置是否有寫正確，沒問題的話，就可以按enter了</h4>
 <pre tabindex="0"><code>docker run -d --name filebeat_7 \
   -v /home/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
   -v /var/log/nginx/access:/logs/access \
   docker.elastic.co/beats/filebeat:7.17.6
-</code></pre><p>等docker起來之後，我們用指令docker ps，就可以看到 filebeat的container正確被啟動</p>
+</code></pre><h4 id="等docker起來之後我們用指令docker-ps就可以看到-filebeat的container正確被啟動">等docker起來之後，我們用指令docker ps，就可以看到 filebeat的container正確被啟動</h4>
 <pre tabindex="0"><code>CONTAINER ID   IMAGE                                       COMMAND                  CREATED        STATUS        PORTS                                       NAMES
 4cde932784a5   docker.elastic.co/beats/filebeat:7.17.6     &#34;/usr/bin/tini -- /u…&#34;   2 weeks ago    Up 2 weeks                                                filebeat
-</code></pre><p>到目前為止，log設定好了、filebeat也設定好了，filebeat 監聽到log變化時，就要將log主動傳送給logstatsh，下一篇文章要介紹logstatsh的安裝及設定。</p>
+</code></pre><hr>
+<p>到目前為止，log設定好了、filebeat也設定好了，filebeat 監聽到log變化時，就要將log主動傳送給logstatsh，下一篇文章要介紹logstatsh的安裝及設定。</p>
+<hr>
 <p>每個步驟的文章會陸續上架，如果還沒看到連結，就代表我還在趕文章中。如果喜歡我寫的內容，希望能夠多多關注我，讓創作者們能夠有繼續創作內容的動力，感謝你們</p>
 
 
@@ -338,14 +329,6 @@
                         
                         
                         
-                        
-                        
-                        <a href="/tags/docker" title="docker">
-                            docker
-                        </a>
-                        
-                        
-                        
                         <a href="/tags/elasticsearch" title="elasticsearch">
                             elasticsearch
                         </a>
@@ -358,22 +341,8 @@
                         
                         
                         
-                        
-                        
-                        <a href="/tags/istio" title="istio">
-                            istio
-                        </a>
-                        
-                        
-                        
                         <a href="/tags/kibana" title="kibana">
                             kibana
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/kubernetes" title="kubernetes">
-                            kubernetes
                         </a>
                         
                         
@@ -384,43 +353,9 @@
                         
                         
                         
-                        <a href="/tags/microservice" title="microservice">
-                            microservice
-                        </a>
-                        
-                        
-                        
-                        
-                        
                         <a href="/tags/nginx" title="nginx">
                             nginx
                         </a>
-                        
-                        
-                        
-                        <a href="/tags/security" title="security">
-                            security
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/service-mesh" title="service-mesh">
-                            service-mesh
-                        </a>
-                        
-                        
-                        
-                        
-                        
-                        <a href="/tags/tips" title="tips">
-                            tips
-                        </a>
-                        
-                        
-                        
-                        
-                        
-                        
                         
                         
                     </div>

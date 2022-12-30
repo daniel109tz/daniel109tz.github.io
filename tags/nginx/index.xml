@@ -6,7 +6,43 @@
     <description>Recent content in Nginx on Daniel Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Thu, 15 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://daniel109tz.github.io/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 29 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://daniel109tz.github.io/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[ELK]讓Kibana可以看到Nginx Log系列(7)：設定Kibana Dashboard之一，設定index</title>
+      <link>https://daniel109tz.github.io/2022/12/29/elk-7/</link>
+      <pubDate>Thu, 29 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://daniel109tz.github.io/2022/12/29/elk-7/</guid>
+      <description>Kibana 可以看成是 Elastic Stack 的圖形化後台管理介面，使用者不需要具備資料庫知識也能進行相關操作。透過 Kibana 可以分析、搜尋、操作、視覺化 Elasticsearch 中的資料，也可透過 Kibana 管</description>
+    </item>
+    
+    <item>
+      <title>[ELK]讓Kibana可以看到Nginx Log系列(6)：安裝外掛Multi Elasticsearch Head</title>
+      <link>https://daniel109tz.github.io/2022/12/28/elk-6/</link>
+      <pubDate>Wed, 28 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://daniel109tz.github.io/2022/12/28/elk-6/</guid>
+      <description>在前往Kibana設定Dashboard之前，我們可以先使用Multi Elasticsearch Head查看， Kibana是否有順利接收到log ealsticsea</description>
+    </item>
+    
+    <item>
+      <title>[ELK]讓Kibana可以看到Nginx Log系列(5)：利用Docker-Compose將ELK全部放在一起</title>
+      <link>https://daniel109tz.github.io/2022/12/23/elk-5/</link>
+      <pubDate>Fri, 23 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://daniel109tz.github.io/2022/12/23/elk-5/</guid>
+      <description>ELK的命名分別是 Elastic Search 、Logstash、Kibana三個開源軟體的縮寫，這章節就要利用Docker-Compose.yaml將這三個軟體一</description>
+    </item>
+    
+    <item>
+      <title>[ELK]讓Kibana可以看到Nginx Log系列(4)：介紹Gork</title>
+      <link>https://daniel109tz.github.io/2022/12/20/elk-4/</link>
+      <pubDate>Tue, 20 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://daniel109tz.github.io/2022/12/20/elk-4/</guid>
+      <description>要讓Kibana正確收到 log傳來的訊息，必須要先轉換成可辨識的格式，而Logstatsh 裡可以使用Grok來轉換，Grok 是將非結構化日誌</description>
+    </item>
+    
     <item>
       <title>[ELK]讓Kibana可以看到Nginx Log系列(3)：設定Logstash</title>
       <link>https://daniel109tz.github.io/2022/12/15/elk-3/</link>

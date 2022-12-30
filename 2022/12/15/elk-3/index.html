@@ -105,18 +105,6 @@
                             <a href="/categories/elk">elk</a>
                         </li>
                         
-                        <li>
-                            <a href="/categories/life">life</a>
-                        </li>
-                        
-                        <li>
-                            <a href="/categories/tech">tech</a>
-                        </li>
-                        
-                        <li>
-                            <a href="/categories/tips">tips</a>
-                        </li>
-                        
                     
                     
 		    
@@ -249,7 +237,8 @@ Logstash程式的目錄如下圖
   <img src="/img/elk/3/2.png" alt="目錄">
 
 </p>
-<p>1、先介紹 /logstash/config/logstash.yml，內容如下</p>
+<hr>
+<h4 id="1-先介紹-logstashconfiglogstashyml內容如下">1. 先介紹 /logstash/config/logstash.yml，內容如下</h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
 </span></span><span style="display:flex;"><span><span style="color:#6272a4">## Default Logstash configuration from logstash-docker.</span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4">## from https://github.com/elastic/logstash-docker/blob/master/build/logstash/config/logstash-oss.yml</span>
@@ -261,7 +250,7 @@ Logstash程式的目錄如下圖
 </span></span></code></pre></div><blockquote>
 <p>/logstash/config/logstash.yml 的內容，完全不用變動，只要照抄就好</p>
 </blockquote>
-<p>2、再來看比較重要的/logstash/pipeline/logstash.conf，內容如下</p>
+<h4 id="2-再來看比較重要的logstashpipelinelogstashconf內容如下">2. 再來看比較重要的/logstash/pipeline/logstash.conf，內容如下</h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>input {
 </span></span><span style="display:flex;"><span>	beats {
 </span></span><span style="display:flex;"><span>		port =&gt; 5000
@@ -295,11 +284,13 @@ Logstash程式的目錄如下圖
 <p>/logstash/pipeline/logstash.conf，對於filebeat傳來的資料，是使用grok將非結構化日誌數據解析為結構化和可查詢內容，關於在撰寫grok時，可以用grok debugger 來做設定之前的語言轉換</p>
 </blockquote>
 <p><em><a href="https://grokdebugger.com/"><em>Grok Debugger | Autocomplete and Live Match Highighting</em></a></em></p>
-<p>關於grok pattern的寫法，也可以參考下列網址：</p>
+<h4 id="關於grok-pattern的寫法也可以參考下列網址">關於grok pattern的寫法，也可以參考下列網址：</h4>
 <p><em><a href="https://doc.yonyoucloud.com/doc/logstash-best-practice-cn/filter/grok.html"><em>Logstash最佳實踐</em></a></em></p>
-<p>這裡特別注意到，在kibana裡面，一定會用到日期來做dashboard的設定，所以日期的格式，一定要是”date”類型，不能是字串，或其它</p>
-<p>而設定output的host就是對到elasticsearch的port號，通常都是用9200。會特別修改的通常都是在index的名稱，到時候在kibana設定要顯示的內容，就是會用index做依據。</p>
+<h4 id="這裡特別注意到在kibana裡面一定會用到日期來做dashboard的設定所以日期的格式一定要是date類型不能是字串或其它">這裡特別注意到，在kibana裡面，一定會用到日期來做dashboard的設定，所以日期的格式，一定要是”date”類型，不能是字串，或其它</h4>
+<h4 id="而設定output的host就是對到elasticsearch的port號通常都是用9200會特別修改的通常都是在index的名稱到時候在kibana設定要顯示的內容就是會用index做依據">而設定output的host就是對到elasticsearch的port號，通常都是用9200。會特別修改的通常都是在index的名稱，到時候在kibana設定要顯示的內容，就是會用index做依據。</h4>
+<hr>
 <p>到這裡，Logstash已經設定完了，後續還會介紹 elasticsearch、kibana的程式設定。</p>
+<hr>
 <p>每個步驟的文章會陸續上架，如果還沒看到連結，就代表我還在趕文章中。如果喜歡我寫的內容，希望能夠多多關注我，讓創作者們能夠有繼續創作內容的動力，感謝你們</p>
 
 
@@ -314,6 +305,11 @@ Logstash程式的目錄如下圖
                             Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/2022/12/20/elk-4/" data-toggle="tooltip" data-placement="top" title="[ELK]讓Kibana可以看到Nginx Log系列(4)：介紹Gork">Next
+                            Post &rarr;</a>
+                    </li>
                     
                 </ul>
                 
@@ -356,14 +352,6 @@ Logstash程式的目錄如下圖
                         
                         
                         
-                        
-                        
-                        <a href="/tags/docker" title="docker">
-                            docker
-                        </a>
-                        
-                        
-                        
                         <a href="/tags/elasticsearch" title="elasticsearch">
                             elasticsearch
                         </a>
@@ -376,22 +364,8 @@ Logstash程式的目錄如下圖
                         
                         
                         
-                        
-                        
-                        <a href="/tags/istio" title="istio">
-                            istio
-                        </a>
-                        
-                        
-                        
                         <a href="/tags/kibana" title="kibana">
                             kibana
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/kubernetes" title="kubernetes">
-                            kubernetes
                         </a>
                         
                         
@@ -402,43 +376,9 @@ Logstash程式的目錄如下圖
                         
                         
                         
-                        <a href="/tags/microservice" title="microservice">
-                            microservice
-                        </a>
-                        
-                        
-                        
-                        
-                        
                         <a href="/tags/nginx" title="nginx">
                             nginx
                         </a>
-                        
-                        
-                        
-                        <a href="/tags/security" title="security">
-                            security
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/service-mesh" title="service-mesh">
-                            service-mesh
-                        </a>
-                        
-                        
-                        
-                        
-                        
-                        <a href="/tags/tips" title="tips">
-                            tips
-                        </a>
-                        
-                        
-                        
-                        
-                        
-                        
                         
                         
                     </div>

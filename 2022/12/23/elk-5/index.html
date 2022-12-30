@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Daniel Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://daniel109tz.github.io/https://picsum.photos/1900/870">
+    <meta property="twitter:image" content="https://daniel109tz.github.io/https://picsum.photos/1900/870" />
+    
+
+    
+    <meta name="title" content="[ELK]讓Kibana可以看到Nginx Log系列(5)：利用Docker-Compose將ELK全部放在一起" />
+    <meta property="og:title" content="[ELK]讓Kibana可以看到Nginx Log系列(5)：利用Docker-Compose將ELK全部放在一起" />
+    <meta property="twitter:title" content="[ELK]讓Kibana可以看到Nginx Log系列(5)：利用Docker-Compose將ELK全部放在一起" />
+    
+
+    
+    <meta name="description" content=" ">
+    <meta property="og:description" content=" " />
+    <meta property="twitter:description" content=" " />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="電商 社群 系統架構 全端工程師 文章創作者">
+    <link rel="shortcut icon" href="/img/favicon/favicon.ico">
+
+    <title>[ELK]讓Kibana可以看到Nginx Log系列(5)：利用Docker-Compose將ELK全部放在一起 |  Daniel Blog</title>
+
+    <link rel="canonical" href="/2022/12/23/elk-5/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Daniel Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/elk">elk</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/archive/">ARCHIVE</a></li>
+                    
+                        <li><a href="/notes/">NOTES</a></li>
+                    
+                        <li><a href="/about/">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('https://picsum.photos/1900/870')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/elasticsearch" title="Elasticsearch">
+                            Elasticsearch
+                        </a>
+                        
+                        <a class="tag" href="/tags/logstash" title="Logstash">
+                            Logstash
+                        </a>
+                        
+                        <a class="tag" href="/tags/kibana" title="Kibana">
+                            Kibana
+                        </a>
+                        
+                        <a class="tag" href="/tags/filebeat" title="Filebeat">
+                            Filebeat
+                        </a>
+                        
+                        <a class="tag" href="/tags/nginx" title="Nginx">
+                            Nginx
+                        </a>
+                        
+                    </div>
+                    <h1>[ELK]讓Kibana可以看到Nginx Log系列(5)：利用Docker-Compose將ELK全部放在一起</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;Daniel&#34;
+                             
+                            on 
+                            Friday, December 23, 2022
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>ELK的命名分別是 Elastic Search 、Logstash、Kibana三個開源軟體的縮寫，這章節就要利用Docker-Compose.yaml將這三個軟體一起啟動</p>
+<p>
+  <img src="/img/elk/5/1.png" alt="elk">
+
+</p>
+<hr>
+<p>先介紹一下目錄，我將elastic search, kibana, logstash分成三個資料夾，如下圖：</p>
+<p>
+  <img src="/img/elk/5/2.png" alt="elasticsearch 目錄">
+
+</p>
+<p>&hellip;</p>
+<h4 id="elastic-searchelastic-search-的docker-file內容如下無須修改">elastic search，elastic search 的Docker file內容如下：(無須修改)</h4>
+<pre tabindex="0"><code>\|%{DATA:logtime}\|%{DATA:priority}\|%{DATA:thread}\|%{DATA:position}\|\|%{GREEDYDATA:info}
+</code></pre><h4 id="sample-code-失敗的log並不是真的解析失敗">Sample Code (失敗的log，並不是真的解析失敗)</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#6272a4"># https://github.com/elastic/elasticsearch-docker</span>
+</span></span><span style="display:flex;"><span>FROM docker.elastic.co/elasticsearch/elasticsearch:7.17.6
+</span></span></code></pre></div><h4 id="elastic-searchconfigelasticsearchyml的內容如下無須修改">elastic search/config/elasticsearch.yml的內容如下：(無須修改)</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## Default Elasticsearch configuration from elasticsearch-docker.</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## from https://github.com/elastic/elasticsearch-docker/blob/master/build/elasticsearch/elasticsearch.yml</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">cluster.name</span>: <span style="color:#f1fa8c">&#34;docker-cluster&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">network.host</span>: <span style="color:#bd93f9">0.0.0.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># minimum_master_nodes need to be explicitly set when bound on a public IP</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># set to 1 to allow single node clusters</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Details: https://github.com/elastic/elasticsearch/pull/17288</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">discovery.zen.minimum_master_nodes</span>: <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## Use single node discovery in order to disable production mode and avoid bootstrap checks</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## see https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">discovery.type</span>: single-node
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">node.name</span>: node-147
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">xpack.security.enabled</span>: <span style="color:#ff79c6">false</span>
+</span></span></code></pre></div><p>&hellip;</p>
+<h4 id="再來是kibana-kibana的-docker-file-內容如下無須修改">再來是kibana, kibana的 Docker file 內容如下：(無須修改)</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#6272a4"># https://github.com/elastic/kibana-docker</span>
+</span></span><span style="display:flex;"><span>FROM docker.elastic.co/kibana/kibana:7.17.6
+</span></span></code></pre></div><h4 id="kibanaconfigkibanayml-的內容如下無須修改">kibana/config/kibana.yml 的內容如下：(無須修改)</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## Default Kibana configuration from kibana-docker.</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## from https://github.com/elastic/kibana-docker/blob/master/build/kibana/config/kibana.yml</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">server.name</span>: kibana
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">server.host</span>: <span style="color:#f1fa8c">&#34;0&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#version 6.1.0</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#elasticsearch.url: http://elasticsearch:9200</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">elasticsearch.hosts</span>: [<span style="color:#f1fa8c">&#34;http://elasticsearch:9200&#34;</span>]
+</span></span></code></pre></div><p>&hellip;</p>
+<h4 id="而logstash就是參照之前的文章">而logstash就是參照之前的文章</h4>
+<p><em><a href="https://daniel109tz.github.io/2022/12/15/elk-3/">[ELK]讓Kibana可以看到Nginx Log系列(3)：設定Logstash_</a>_</em></p>
+<p>&hellip;</p>
+<h4 id="logstash的docker-file-如下無須修改">logstash的Docker file 如下：(無須修改)</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># https://github.com/elastic/logstash-docker</span>
+</span></span><span style="display:flex;"><span>FROM docker.elastic.co/logstash/logstash:7.17.6
+</span></span></code></pre></div><h4 id="logstashconfiglogstashyml-內容如下無須修改">logstash/config/logstash.yml 內容如下：(無須修改)</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">http.host</span>: <span style="color:#f1fa8c">&#34;0.0.0.0&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">path.config</span>: /usr/share/logstash/pipeline
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">pipeline.ecs_compatibility</span>: disabled
+</span></span></code></pre></div><h4 id="logstashpipelinelogstashconf-內容如下">logstash/pipeline/logstash.conf 內容如下：</h4>
+<blockquote>
+<p>(可要根據自已寫好的grok做設定，如果沒有自訂，並且是照之前文章filebeat設定，可以直接複制貼上做使用)</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>input {
+</span></span><span style="display:flex;"><span>	beats {
+</span></span><span style="display:flex;"><span>		port =&gt; 5000
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## Add your filters / logstash plugins configuration here</span>
+</span></span><span style="display:flex;"><span>filter {
+</span></span><span style="display:flex;"><span>        grok {
+</span></span><span style="display:flex;"><span>		 break_on_match =&gt; true       
+</span></span><span style="display:flex;"><span> 		 match =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#34;message&#34;</span> =&gt; &#34;%{IPV4:remote_address} - (%{USERNAME:user}|-) \[%{HTTPDATE:log_timestamp}\] (%{HOSTNAME:hostname}|-) (%{WORD:request_method}|-) (%{URIPATH:uri}|-|) (%{DATA:path}|-) %{INT:status_code:int} (?:%{BASE10NUM:body_bytes_sent}|-) (?:%{GREEDYDATA:http_referrer}|-) (?:%{NOTSPACE:http_x_forwarded_for}|-)&#34; }
+</span></span><span style="display:flex;"><span>	   }
+</span></span><span style="display:flex;"><span>	   date {
+</span></span><span style="display:flex;"><span>			locale =&gt; &#34;UTF-8&#34;
+</span></span><span style="display:flex;"><span>			match =&gt; [ &#34;log_timestamp&#34;, &#34;dd/MMM/yyyy:HH:mm:ss Z&#34; ]
+</span></span><span style="display:flex;"><span>			remove_field =&gt; [&#34;timestamp&#34;]
+</span></span><span style="display:flex;"><span>			target =&gt; &#34;log_timestamp&#34;
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	   mutate {
+</span></span><span style="display:flex;"><span>        remove_field =&gt; [ &#34;message&#34; ]
+</span></span><span style="display:flex;"><span>       }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>output {
+</span></span><span style="display:flex;"><span>	elasticsearch {
+</span></span><span style="display:flex;"><span>		hosts =&gt; &#34;elasticsearch:9200&#34;
+</span></span><span style="display:flex;"><span>		index =&gt; &#34;ec-front-%{+yyyy.MM.dd}&#34;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>&hellip;</p>
+<h4 id="最後是將-elastic-search-logstashkibana-三項docker服務一起啟動的docker-composeyml內容如下無須修改">最後是將 Elastic Search 、Logstash、Kibana 三項Docker服務一起啟動的docker-compose.yml內容如下：(無須修改)</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#f1fa8c">&#39;2&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">services</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">elasticsearch</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">build</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">context</span>: elasticsearch/
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">volumes</span>:
+</span></span><span style="display:flex;"><span>      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;9200:9200&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;9300:9300&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">ES_JAVA_OPTS</span>: <span style="color:#f1fa8c">&#34;-Xmx256m -Xms256m&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">networks</span>:
+</span></span><span style="display:flex;"><span>      - elk
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">logstash</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">build</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">context</span>: logstash/
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">volumes</span>:
+</span></span><span style="display:flex;"><span>      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+</span></span><span style="display:flex;"><span>      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;5000:5000&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">LS_JAVA_OPTS</span>: <span style="color:#f1fa8c">&#34;-Xmx256m -Xms256m&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">networks</span>:
+</span></span><span style="display:flex;"><span>      - elk
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - elasticsearch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">kibana</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">build</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">context</span>: kibana/
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">volumes</span>:
+</span></span><span style="display:flex;"><span>      - ./kibana/config/:/usr/share/kibana/config:ro
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;5601:5601&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">networks</span>:
+</span></span><span style="display:flex;"><span>      - elk
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - elasticsearch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">networks</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">elk</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">driver</span>: bridge
+</span></span></code></pre></div><h4 id="最後確認檔案內容都已經完成了就可以使用command-line在elk的目錄之後輸入下列指令">最後確認檔案內容都已經完成了，就可以使用command line在elk的目錄之後，輸入下列指令：</h4>
+<pre tabindex="0"><code>docker-compose up -d
+</code></pre><hr>
+<p>Elastic Search 、Logstash、Kibana 三項Docker服務就會自已啟動了</p>
+<hr>
+<p>每個步驟的文章會陸續上架，如果還沒看到連結，就代表我還在趕文章中。如果喜歡我寫的內容，希望能夠多多關注我，讓創作者們能夠有繼續創作內容的動力，感謝你們</p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2022/12/20/elk-4/" data-toggle="tooltip" data-placement="top" title="[ELK]讓Kibana可以看到Nginx Log系列(4)：介紹Gork">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2022/12/28/elk-6/" data-toggle="tooltip" data-placement="top" title="[ELK]讓Kibana可以看到Nginx Log系列(6)：安裝外掛Multi Elasticsearch Head">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/elasticsearch" title="elasticsearch">
+                            elasticsearch
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/filebeat" title="filebeat">
+                            filebeat
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/kibana" title="kibana">
+                            kibana
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/logstash" title="logstash">
+                            logstash
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/nginx" title="nginx">
+                            nginx
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href=""></a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:daniel109tz@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/daniel-yu-43349862/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    <li>
+                        <a target="_blank" href="https://medium.com/@q29823">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-medium fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Daniel Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Daniel Blog 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
