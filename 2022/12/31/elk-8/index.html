@@ -15,15 +15,15 @@
     
 
     
-    <meta name="title" content="" />
-    <meta property="og:title" content="" />
-    <meta property="twitter:title" content="" />
+    <meta name="title" content="[ELK]讓Kibana可以看到Nginx Log系列(8)：設定Kibana Dashboard之二，設定Dashboard" />
+    <meta property="og:title" content="[ELK]讓Kibana可以看到Nginx Log系列(8)：設定Kibana Dashboard之二，設定Dashboard" />
+    <meta property="twitter:title" content="[ELK]讓Kibana可以看到Nginx Log系列(8)：設定Kibana Dashboard之二，設定Dashboard" />
     
 
     
-    <meta name="description" content="電商、社群、系統架構、全端工程師、文章創作者">
-    <meta property="og:description" content="電商、社群、系統架構、全端工程師、文章創作者" />
-    <meta property="twitter:description" content="電商、社群、系統架構、全端工程師、文章創作者" />
+    <meta name="description" content=" ">
+    <meta property="og:description" content=" " />
+    <meta property="twitter:description" content=" " />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="電商 社群 系統架構 全端工程師 文章創作者">
     <link rel="shortcut icon" href="/img/favicon/favicon.ico">
 
-    <title>Categories |  Daniel Blog</title>
+    <title>[ELK]讓Kibana可以看到Nginx Log系列(8)：設定Kibana Dashboard之二，設定Dashboard |  Daniel Blog</title>
 
-    <link rel="canonical" href="/categories/">
+    <link rel="canonical" href="/2022/12/31/elk-8/">
 
     
     
@@ -155,14 +155,57 @@
 
 
 
-<header class="intro-header" style="background-image: url('https://picsum.photos/1900/870')">
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('https://picsum.photos/1900/870')
+    }
+</style>
+
+<header class="intro-header" >
+
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>Daniel Blog </h1>
-                    
-		    <span class="subheading">只有想不到，沒有做不到</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/elasticsearch" title="Elasticsearch">
+                            Elasticsearch
+                        </a>
+                        
+                        <a class="tag" href="/tags/logstash" title="Logstash">
+                            Logstash
+                        </a>
+                        
+                        <a class="tag" href="/tags/kibana" title="Kibana">
+                            Kibana
+                        </a>
+                        
+                        <a class="tag" href="/tags/filebeat" title="Filebeat">
+                            Filebeat
+                        </a>
+                        
+                        <a class="tag" href="/tags/nginx" title="Nginx">
+                            Nginx
+                        </a>
+                        
+                    </div>
+                    <h1>[ELK]讓Kibana可以看到Nginx Log系列(8)：設定Kibana Dashboard之二，設定Dashboard</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;Daniel&#34;
+                             
+                            on 
+                            Saturday, December 31, 2022
+                            
+                            
+                            
+                            
+                    </span>
                 </div>
             </div>
         </div>
@@ -175,19 +218,116 @@
 <article>
     <div class="container">
         <div class="row">
+
             
             <div class="
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
                 post-container">
 
-         	
+                
+                <p>要設定Kibana Dashboard 必須先在Kibana設定index(系列7)，再來才能產生第一個Dashboard</p>
+<p>
+  <img src="/img/elk/8/1.png" alt="Kibana Dashboard">
+
+</p>
+<hr>
+<h4 id="接續系列7的設定index接下來要產生第一個dashboard所以一樣在網頁的url輸入elk所在的ip5601就可以看到首頁並且要按下-左側的menu-button再按下analytics--dashboard">接續系列(7)的設定index，接下來要產生第一個Dashboard，所以一樣在網頁的url輸入&quot;&lt;ELK所在的ip&gt;:5601&quot;，就可以看到首頁，並且要按下 左側的Menu Button，再按下Analytics → Dashboard。</h4>
+<p>
+  <img src="/img/elk/8/2.png" alt="Kibana Dashboard">
+
+</p>
+<h4 id="按下analytics--dashboard後會出現create-new-dashboard按下create-new-dashboard">按下Analytics → Dashboard後，會出現Create new dashboard，按下Create new dashboard</h4>
+<p>
+  <img src="/img/elk/8/3.png" alt="Kibana Dashboard">
+
+</p>
+<h4 id="按下create-new-dashboard就出現自訂的空白dashboard頁面再來按下左側的create-visualization">按下Create new dashboard就出現自訂的空白Dashboard頁面，再來按下左側的Create visualization</h4>
+<p>
+  <img src="/img/elk/8/4.png" alt="Kibana Dashboard">
+
+</p>
+<h4 id="進到create-visualization頁面後可以看到中間顯示drop-some-fields-here-to-start就代表我們可以將左側available-fields下方所列出的欄位利用滑鼠將欄位拖拉到中間">進到Create visualization頁面後，可以看到中間顯示Drop some fields here to start，就代表我們可以將左側Available fields下方所列出的欄位，利用滑鼠將欄位拖拉到中間</h4>
+<p>
+  <img src="/img/elk/8/5.png" alt="Kibana Dashboard">
+
+</p>
+<p>&hellip;</p>
+<h4 id="因為這系統是介紹kibana接上nginx的log--所以這裡示範如何在dashboard-出現nginx-當天接收到的流量">因為這系統是介紹Kibana接上Nginx的Log , 所以這裡示範如何在Dashboard 出現Nginx 當天接收到的流量。</h4>
+<h4 id="我們將左側的available-fields下拉到可以看到log_timestamp欄位的地方並且用滑鼠按下log_timestamp拖拉到中間的位置就會出現長條圖">我們將左側的Available fields下拉到可以看到log_timestamp欄位的地方，並且用滑鼠按下log_timestamp，拖拉到中間的位置，就會出現長條圖</h4>
+<p>
+  <img src="/img/elk/8/6.png" alt="Kibana Dashboard">
+
+</p>
+<h4 id="這裡的長條圖是代表15分鐘之內接到的log數量就可以代表網站的流量要看一整天的話我們可以在右上角看到last-15-minutes-文字的左邊有一個小日歷圖示按下圖示就可以選擇要顯示的時間區間">這裡的長條圖，是代表15分鐘之內接到的log數量，就可以代表網站的流量。要看一整天的話，我們可以在右上角看到”Last 15 minutes” ，文字的左邊有一個小日歷圖示，按下圖示，就可以選擇要顯示的時間區間</h4>
+<p>
+  <img src="/img/elk/8/7.png" alt="Kibana Dashboard">
+
+</p>
+<h4 id="在時間區間選擇today再按下右上方淺藍色的-save-and-return這時自訂的dashboard-區塊就會出現在dashboard中">在時間區間選擇Today，再按下右上方淺藍色的 save and return，這時自訂的Dashboard 區塊就會出現在Dashboard中</h4>
+<p>
+  <img src="/img/elk/8/8.png" alt="Kibana Dashboard">
+
+</p>
+<h4 id="如果要再繼續產生其它要追蹤的區塊請按上圖左邊的create-visualization一樣做上述的動作如果要離開的話按下上圖右上角的save-按鈕按下save按鈕後會需要替此dashboard-命名我是輸入log-追蹤之後再按下圖右下角的save">如果要再繼續產生其它要追蹤的區塊，請按上圖左邊的Create visualization，一樣做上述的動作。如果要離開的話，按下上圖右上角的save 按鈕，按下save按鈕後會需要替此Dashboard 命名，我是輸入Log 追蹤，之後再按下圖右下角的save</h4>
+<p>
+  <img src="/img/elk/8/9.png" alt="Kibana Dashboard">
+
+</p>
+<h4 id="按下save後就會將你的儀表板做儲存的動作並且回到你設定好的頁面">按下save後，就會將你的儀表板做儲存的動作，並且回到你設定好的頁面。</h4>
+<p>
+  <img src="/img/elk/8/10.png" alt="Kibana Dashboard">
+
+</p>
+<h4 id="如果要建立其它不同的dashboard可以在左上的麵包屑按下dashboard-就會到dashboard-list在這裡可以選擇不同的自訂dashboard或是再新增其它的dashboard">如果要建立其它不同的Dashboard，可以在左上的麵包屑，按下Dashboard ，就會到Dashboard List，在這裡可以選擇不同的自訂Dashboard，或是再新增其它的Dashboard</h4>
+<p>
+  <img src="/img/elk/8/11.png" alt="Kibana Dashboard">
+
+</p>
+<hr>
+<p>這篇是這系列的最後一篇了，之後如果有用到其它的技術，也會再補充上來，有問題再留言問我吧。</p>
+<hr>
+<p>每個步驟的文章會陸續上架，如果還沒看到連結，就代表我還在趕文章中。如果喜歡我寫的內容，希望能夠多多關注我，讓創作者們能夠有繼續創作內容的動力，感謝你們</p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2022/12/29/elk-7/" data-toggle="tooltip" data-placement="top" title="[ELK]讓Kibana可以看到Nginx Log系列(7)：設定Kibana Dashboard之一，設定index">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
                 
 
 
 
-
             </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
             
             <div class="
                 col-lg-8 col-lg-offset-2
@@ -204,31 +344,31 @@
                         
                         
                         <a href="/tags/elasticsearch" title="elasticsearch">
-                        elasticsearch
+                            elasticsearch
                         </a>
                         
                         
                         
                         <a href="/tags/filebeat" title="filebeat">
-                        filebeat
+                            filebeat
                         </a>
                         
                         
                         
                         <a href="/tags/kibana" title="kibana">
-                        kibana
+                            kibana
                         </a>
                         
                         
                         
                         <a href="/tags/logstash" title="logstash">
-                        logstash
+                            logstash
                         </a>
                         
                         
                         
                         <a href="/tags/nginx" title="nginx">
-                        nginx
+                            nginx
                         </a>
                         
                         
@@ -311,7 +451,7 @@
             
            
                    <li>
-                       <a href='/categories/index.xml' rel="alternate" type="application/rss+xml" title="Daniel Blog" >
+                       <a href='' rel="alternate" type="application/rss+xml" title="Daniel Blog" >
                            <span class="fa-stack fa-lg">
                                <i class="fas fa-circle fa-stack-2x"></i>
                                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>

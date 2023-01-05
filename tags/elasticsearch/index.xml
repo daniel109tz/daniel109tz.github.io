@@ -6,7 +6,16 @@
     <description>Recent content in Elasticsearch on Daniel Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Thu, 29 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://daniel109tz.github.io/tags/elasticsearch/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 31 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://daniel109tz.github.io/tags/elasticsearch/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[ELK]讓Kibana可以看到Nginx Log系列(8)：設定Kibana Dashboard之二，設定Dashboard</title>
+      <link>https://daniel109tz.github.io/2022/12/31/elk-8/</link>
+      <pubDate>Sat, 31 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://daniel109tz.github.io/2022/12/31/elk-8/</guid>
+      <description>要設定Kibana Dashboard 必須先在Kibana設定index(系列7)，再來才能產生第一個Dashboard 接續系列(7)的設定index，接下來</description>
+    </item>
+    
     <item>
       <title>[ELK]讓Kibana可以看到Nginx Log系列(7)：設定Kibana Dashboard之一，設定index</title>
       <link>https://daniel109tz.github.io/2022/12/29/elk-7/</link>
